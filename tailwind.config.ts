@@ -14,6 +14,7 @@ export default {
     },
     extend: {
       colors: {
+        border: "hsl(var(--border))",
         game: {
           background: "#0F172A",
           focus: "#8B5CF6",
@@ -31,8 +32,8 @@ export default {
           "100%": { transform: "scale(1)", opacity: "1" },
         },
         "circle-out": {
-          "0%": { transform: "scale(1)", opacity: "1" },
-          "100%": { transform: "scale(0)", opacity: "0" },
+          "0%": { transform: "scale(0)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
       animation: {
