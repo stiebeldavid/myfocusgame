@@ -15,6 +15,8 @@ export default {
     extend: {
       colors: {
         border: "hsl(var(--border))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         game: {
           background: "#0F172A",
           focus: "#8B5CF6",
