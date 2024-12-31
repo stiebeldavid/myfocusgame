@@ -15,28 +15,29 @@ const GameCircle: React.FC<GameCircleProps> = ({ type, onClick, taps = 0, isVisi
   useEffect(() => {
     if (isVisible) {
       let lastTime = performance.now();
-      let velocityX = (Math.random() - 0.5) * 2;
-      let velocityY = (Math.random() - 0.5) * 2;
+      // Increased initial velocity range from 2 to 4
+      let velocityX = (Math.random() - 0.5) * 4;
+      let velocityY = (Math.random() - 0.5) * 4;
 
       const animate = (currentTime: number) => {
-        const deltaTime = (currentTime - lastTime) / 16; // Normalize to ~60fps
+        const deltaTime = (currentTime - lastTime) / 16;
         lastTime = currentTime;
 
         setPosition(prev => {
           const newX = prev.x + velocityX * deltaTime;
           const newY = prev.y + velocityY * deltaTime;
 
-          // Bounce off boundaries
-          if (Math.abs(newX) > 150) velocityX *= -0.8;
-          if (Math.abs(newY) > 150) velocityY *= -0.8;
+          // Bounce off boundaries with more energy (increased from 0.8 to 0.9)
+          if (Math.abs(newX) > 150) velocityX *= -0.9;
+          if (Math.abs(newY) > 150) velocityY *= -0.9;
 
-          // Add slight random movement
-          velocityX += (Math.random() - 0.5) * 0.1;
-          velocityY += (Math.random() - 0.5) * 0.1;
+          // Increased random movement (from 0.1 to 0.2)
+          velocityX += (Math.random() - 0.5) * 0.2;
+          velocityY += (Math.random() - 0.5) * 0.2;
 
-          // Dampen velocity
-          velocityX *= 0.99;
-          velocityY *= 0.99;
+          // Reduced damping (from 0.99 to 0.995) to maintain speed longer
+          velocityX *= 0.995;
+          velocityY *= 0.995;
 
           return {
             x: Math.max(-150, Math.min(150, newX)),
