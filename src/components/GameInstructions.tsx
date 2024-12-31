@@ -16,7 +16,7 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({ open, onOpenChange,
         <DialogHeader className="space-y-4">
           <DialogTitle className="text-lg sm:text-3xl font-bold text-center flex items-center justify-center gap-2 sm:gap-3 text-[#9b87f5] px-2">
             <Star className="w-4 h-4 sm:w-8 sm:h-8" />
-            Welcome to Focus Flow!
+            My Focus Game
             <Star className="w-4 h-4 sm:w-8 sm:h-8" />
           </DialogTitle>
           <DialogDescription className="space-y-4 text-white/90">
