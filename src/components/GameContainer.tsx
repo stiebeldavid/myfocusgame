@@ -4,7 +4,6 @@ import GameLetters from './GameLetters';
 import ScoreDisplay from './ScoreDisplay';
 import { Button } from './ui/button';
 import { Flag } from 'lucide-react';
-import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
@@ -59,11 +58,6 @@ const GameContainer: React.FC<GameContainerProps> = ({
   };
 
   const handleCircleClick = () => {
-    if (gameCircle.type === "red") {
-      toast.info("Ignore the red circle! Instead, spell 'FOCUS' using the letters below.", {
-        duration: 3000,
-      });
-    }
     onCircleClick();
   };
 
@@ -88,33 +82,26 @@ const GameContainer: React.FC<GameContainerProps> = ({
 
       <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
         <TooltipProvider>
-          {tooltipContent ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="relative">
-                  <GameCircle
-                    type={gameCircle.type}
-                    isVisible={gameCircle.isVisible}
-                    onClick={handleCircleClick}
-                    taps={gameCircle.taps}
-                  />
-                </div>
-              </TooltipTrigger>
+          <Tooltip open={gameCircle.type === "red"}>
+            <TooltipTrigger asChild>
+              <div className="relative">
+                <GameCircle
+                  type={gameCircle.type}
+                  isVisible={gameCircle.isVisible}
+                  onClick={handleCircleClick}
+                  taps={gameCircle.taps}
+                />
+              </div>
+            </TooltipTrigger>
+            {gameCircle.type === "red" && (
               <TooltipContent 
                 side="top" 
                 className="max-w-[200px] text-center bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-lg shadow-lg"
               >
-                {tooltipContent}
+                Ignore this red circle! Instead, spell 'FOCUS' using the letters below.
               </TooltipContent>
-            </Tooltip>
-          ) : (
-            <GameCircle
-              type={gameCircle.type}
-              isVisible={gameCircle.isVisible}
-              onClick={handleCircleClick}
-              taps={gameCircle.taps}
-            />
-          )}
+            )}
+          </Tooltip>
         </TooltipProvider>
       </div>
 
