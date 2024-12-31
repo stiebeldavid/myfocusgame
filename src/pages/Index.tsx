@@ -175,27 +175,6 @@ const Index = () => {
     <div className="h-screen w-screen overflow-hidden relative">
       <StarBackground />
       
-      {/* Info button for instructions */}
-      <div className="absolute top-4 left-4 z-50">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
-                onClick={() => setShowInstructions(true)}
-              >
-                <Info className="h-5 w-5 text-white" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>View game instructions</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-
       <GameContainer
         gameStarted={gameStarted}
         gameCircle={gameCircle}
@@ -205,10 +184,10 @@ const Index = () => {
         onCircleClick={handleCircleClick}
         onLetterClick={handleLetterClick}
         onEndGame={() => setShowEndDialog(true)}
-        // Pass the first appearance states and their setter functions
         hasSeenGreen={hasSeenGreen}
         hasSeenYellow={hasSeenYellow}
         hasSeenRed={hasSeenRed}
+        onShowInstructions={() => setShowInstructions(true)}
       />
 
       <GameCountdown countdown={countdown} />
