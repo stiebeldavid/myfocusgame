@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import StarBackground from "@/components/StarBackground";
 import FocusCircle from "@/components/FocusCircle";
 import GameCircle from "@/components/GameCircle";
 import ScoreDisplay from "@/components/ScoreDisplay";
 import GameInstructions from "@/components/GameInstructions";
+import Auth from "@/components/Auth";
 import { useGameState } from "@/hooks/useGameState";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [session, setSession] = useState(null);
   const { score, initializeGame, incrementScore } = useGameState();
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
@@ -25,6 +30,20 @@ const Index = () => {
     isVisible: false,
     taps: 0,
   });
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const scrambleLetters = useCallback(() => {
     const shuffled = [...FOCUS_LETTERS].sort(() => Math.random() - 0.5);
@@ -136,6 +155,10 @@ const Index = () => {
       return () => clearTimeout(timeout);
     }
   }, [gameCircle.isVisible, spawnNewCircle, gameStarted]);
+
+  if (!session) {
+    return <Auth />;
+  }
 
   return (
     <div className="h-screen w-screen overflow-hidden relative">
