@@ -54,6 +54,7 @@ export const useGameState = () => {
 
   return {
     score,
+    currentGameId,
     initializeGame,
     incrementScore
   };

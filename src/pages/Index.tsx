@@ -5,18 +5,22 @@ import ScoreDisplay from "@/components/ScoreDisplay";
 import GameInstructions from "@/components/GameInstructions";
 import GameCountdown from "@/components/GameCountdown";
 import GameLetters from "@/components/GameLetters";
+import EndGameDialog from "@/components/EndGameDialog";
 import { useGameState } from "@/hooks/useGameState";
+import { Button } from "@/components/ui/button";
+import { Flag } from "lucide-react";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
 
 const Index = () => {
-  const { score, initializeGame, incrementScore } = useGameState();
+  const { score, initializeGame, incrementScore, currentGameId } = useGameState();
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
   const [showInstructions, setShowInstructions] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [showEndDialog, setShowEndDialog] = useState(false);
   const [gameCircle, setGameCircle] = useState<{
     type: "green" | "red" | "yellow";
     isVisible: boolean;
@@ -69,7 +73,7 @@ const Index = () => {
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          decay: 0.95  // This makes particles fade faster
+          decay: 0.95
         });
       } else {
         setGameCircle((prev) => ({ ...prev, taps: newTaps }));
@@ -81,7 +85,7 @@ const Index = () => {
         particleCount: 50,
         spread: 45,
         origin: { y: 0.6 },
-        decay: 0.95  // This makes particles fade faster
+        decay: 0.95
       });
     }
   };
@@ -145,6 +149,19 @@ const Index = () => {
       <StarBackground />
       <ScoreDisplay score={score} />
       
+      {gameStarted && (
+        <div className="absolute top-8 right-8">
+          <Button
+            variant="outline"
+            onClick={() => setShowEndDialog(true)}
+            className="bg-white/10 backdrop-blur-sm hover:bg-white/20"
+          >
+            <Flag className="mr-2" />
+            Done Training
+          </Button>
+        </div>
+      )}
+      
       <GameCountdown countdown={countdown} />
 
       <GameCircle
@@ -164,6 +181,13 @@ const Index = () => {
         open={showInstructions}
         onOpenChange={setShowInstructions}
         onStartGame={handleStartGame}
+      />
+
+      <EndGameDialog
+        open={showEndDialog}
+        onOpenChange={setShowEndDialog}
+        score={score}
+        gameId={currentGameId}
       />
     </div>
   );
