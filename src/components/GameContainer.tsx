@@ -3,7 +3,7 @@ import GameCircle from './GameCircle';
 import GameLetters from './GameLetters';
 import ScoreDisplay from './ScoreDisplay';
 import { Button } from './ui/button';
-import { Flag } from 'lucide-react';
+import { Flag, Info } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -27,6 +27,7 @@ interface GameContainerProps {
   hasSeenGreen: boolean;
   hasSeenYellow: boolean;
   hasSeenRed: boolean;
+  onShowInstructions: () => void;
 }
 
 const GameContainer: React.FC<GameContainerProps> = ({
@@ -41,6 +42,7 @@ const GameContainer: React.FC<GameContainerProps> = ({
   hasSeenGreen,
   hasSeenYellow,
   hasSeenRed,
+  onShowInstructions,
 }) => {
   const getTooltipContent = () => {
     if (gameCircle.type === "green" && !hasSeenGreen) {
@@ -62,7 +64,15 @@ const GameContainer: React.FC<GameContainerProps> = ({
       <ScoreDisplay score={score} />
       
       {gameStarted && (
-        <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-10">
+        <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-10 flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onShowInstructions}
+            className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+          >
+            <Info className="h-5 w-5 text-white" />
+          </Button>
           <Button
             variant="outline"
             onClick={onEndGame}
