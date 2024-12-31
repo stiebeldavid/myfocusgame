@@ -1,20 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import StarBackground from "@/components/StarBackground";
-import FocusCircle from "@/components/FocusCircle";
 import GameCircle from "@/components/GameCircle";
 import ScoreDisplay from "@/components/ScoreDisplay";
 import GameInstructions from "@/components/GameInstructions";
-import Auth from "@/components/Auth";
+import GameCountdown from "@/components/GameCountdown";
+import GameLetters from "@/components/GameLetters";
 import { useGameState } from "@/hooks/useGameState";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
 
 const Index = () => {
-  const navigate = useNavigate();
-  const [session, setSession] = useState(null);
   const { score, initializeGame, incrementScore } = useGameState();
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
@@ -30,20 +26,6 @@ const Index = () => {
     isVisible: false,
     taps: 0,
   });
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const scrambleLetters = useCallback(() => {
     const shuffled = [...FOCUS_LETTERS].sort(() => Math.random() - 0.5);
@@ -156,22 +138,12 @@ const Index = () => {
     }
   }, [gameCircle.isVisible, spawnNewCircle, gameStarted]);
 
-  if (!session) {
-    return <Auth />;
-  }
-
   return (
     <div className="h-screen w-screen overflow-hidden relative">
       <StarBackground />
       <ScoreDisplay score={score} />
       
-      {countdown !== null && (
-        <div className="absolute inset-0 flex items-center justify-center z-50">
-          <div className="text-8xl font-bold text-white animate-bounce">
-            {countdown === 0 ? "Start!" : countdown}
-          </div>
-        </div>
-      )}
+      <GameCountdown countdown={countdown} />
 
       <GameCircle
         type={gameCircle.type}
@@ -180,16 +152,11 @@ const Index = () => {
         taps={gameCircle.taps}
       />
 
-      <div className="absolute bottom-12 left-0 right-0 flex justify-center gap-4">
-        {scrambledLetters.map((letter, index) => (
-          <FocusCircle
-            key={index}
-            letter={letter}
-            onClick={() => handleLetterClick(letter)}
-            isActive={currentSequence.includes(letter)}
-          />
-        ))}
-      </div>
+      <GameLetters
+        scrambledLetters={scrambledLetters}
+        currentSequence={currentSequence}
+        onLetterClick={handleLetterClick}
+      />
 
       <GameInstructions
         open={showInstructions}

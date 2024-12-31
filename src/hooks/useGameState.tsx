@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export const useGameState = () => {
   const [score, setScore] = useState(0);
@@ -11,9 +11,7 @@ export const useGameState = () => {
     try {
       const { data, error } = await supabase
         .from('GamePlays')
-        .insert([
-          { score: 0, user_email: (await supabase.auth.getUser()).data.user?.email }
-        ])
+        .insert([{ score: 0 }])
         .select()
         .single();
 
