@@ -79,7 +79,7 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
             <p className="text-base sm:text-lg">You scored {score} points.</p>
             <p className="text-base sm:text-lg">Want to build even better focus skills?</p>
             <p className="text-sm text-muted-foreground">
-              Get notified when we add new focus-building features.
+              Get notified when we add new features to this game, or launch other focus-building games or tools.
             </p>
             <div className="space-y-2">
               <Input
