@@ -3,7 +3,7 @@ import GameCircle from './GameCircle';
 import GameLetters from './GameLetters';
 import ScoreDisplay from './ScoreDisplay';
 import { Button } from './ui/button';
-import { Flag } from 'lucide-react';
+import { Flag, Info } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -75,7 +75,15 @@ const GameContainer: React.FC<GameContainerProps> = ({
       <ScoreDisplay score={score} />
       
       {gameStarted && (
-        <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-10">
+        <div className="absolute top-4 sm:top-8 right-4 sm:right-8 z-10 flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onShowInstructions}
+            className="bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-200 text-white border-white/20"
+          >
+            <Info className="h-4 w-4" />
+          </Button>
           <Button
             variant="outline"
             onClick={onEndGame}

@@ -6,14 +6,6 @@ import GameCountdown from "@/components/GameCountdown";
 import EndGameDialog from "@/components/EndGameDialog";
 import { useGameState } from "@/hooks/useGameState";
 import confetti from "canvas-confetti";
-import { Info } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
 
@@ -22,6 +14,7 @@ const Index = () => {
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
   const [showInstructions, setShowInstructions] = useState(true);
+  const [isInitialStart, setIsInitialStart] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [showEndDialog, setShowEndDialog] = useState(false);
@@ -127,6 +120,9 @@ const Index = () => {
     setShowInstructions(false);
     setCountdown(3);
     await initializeGame();
+    if (isInitialStart) {
+      setIsInitialStart(false);
+    }
     // Reset the seen states when starting a new game
     setHasSeenGreen(false);
     setHasSeenYellow(false);
@@ -196,6 +192,7 @@ const Index = () => {
         open={showInstructions}
         onOpenChange={setShowInstructions}
         onStartGame={handleStartGame}
+        isInitialStart={isInitialStart}
       />
 
       <EndGameDialog

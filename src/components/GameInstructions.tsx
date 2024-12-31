@@ -7,12 +7,21 @@ interface GameInstructionsProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onStartGame: () => void;
+  isInitialStart?: boolean;
 }
 
-const GameInstructions: React.FC<GameInstructionsProps> = ({ open, onOpenChange, onStartGame }) => {
+const GameInstructions: React.FC<GameInstructionsProps> = ({ 
+  open, 
+  onOpenChange, 
+  onStartGame,
+  isInitialStart = true 
+}) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] w-[calc(100%-2rem)] mx-auto max-h-[85vh] overflow-y-auto bg-[#1A1F2C] border-[#9b87f5] text-white">
+      <DialogContent 
+        className="sm:max-w-[600px] w-[calc(100%-2rem)] mx-auto max-h-[85vh] overflow-y-auto bg-[#1A1F2C] border-[#9b87f5] text-white"
+        hideCloseButton={isInitialStart}
+      >
         <DialogHeader className="space-y-4">
           <DialogTitle className="text-lg sm:text-3xl font-bold text-center flex items-center justify-center gap-2 sm:gap-3 text-[#9b87f5] px-2">
             <Star className="w-4 h-4 sm:w-8 sm:h-8" />
@@ -61,7 +70,7 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({ open, onOpenChange,
             onClick={onStartGame} 
             className="w-full sm:w-[200px] bg-[#9b87f5] hover:bg-[#7E69AB] text-white font-semibold text-base sm:text-lg py-3 sm:py-6"
           >
-            Start Training
+            {isInitialStart ? 'Start Training' : 'Continue'}
           </Button>
         </DialogFooter>
       </DialogContent>
