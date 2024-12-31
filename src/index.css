@@ -88,11 +88,13 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
 
-@layer base {
   * {
     @apply border-[hsl(var(--border))];
+  }
+
+  html, body, #root {
+    @apply h-full w-full overflow-hidden m-0 p-0;
   }
 
   body {
