@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
 
-const StarBackground = () => {
-  const stars = Array.from({ length: 50 }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 2 + 1,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    delay: Math.random() * 2,
-  }));
+const StarBackground = React.memo(() => {
+  const stars = useMemo(() => 
+    Array.from({ length: 50 }).map((_, i) => ({
+      id: i,
+      size: Math.random() * 2 + 1,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 2,
+    })), []
+  );
 
   return (
     <div className="fixed inset-0 bg-game-background overflow-hidden">
@@ -26,6 +28,8 @@ const StarBackground = () => {
       ))}
     </div>
   );
-};
+});
+
+StarBackground.displayName = "StarBackground";
 
 export default StarBackground;
