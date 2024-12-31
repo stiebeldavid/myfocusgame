@@ -16,6 +16,7 @@ const Index = () => {
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
   const [showInstructions, setShowInstructions] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
   const [gameCircle, setGameCircle] = useState<{
     type: "green" | "red" | "yellow";
     isVisible: boolean;
@@ -49,6 +50,12 @@ const Index = () => {
     setGameCircle({ type, isVisible: true, taps });
     setCurrentSequence([]);
   }, [gameStarted]);
+
+  const spawnFirstGreenCircle = useCallback(() => {
+    const taps = Math.floor(Math.random() * 4) + 3; // 3-6 taps
+    setGameCircle({ type: "green", isVisible: true, taps });
+    setCurrentSequence([]);
+  }, []);
 
   const handleCircleClick = () => {
     if (!gameCircle.isVisible) return;
@@ -99,12 +106,29 @@ const Index = () => {
 
   const handleStartGame = () => {
     setShowInstructions(false);
-    setGameStarted(true);
+    setCountdown(3);
   };
 
   useEffect(() => {
     scrambleLetters();
   }, [scrambleLetters]);
+
+  useEffect(() => {
+    if (countdown === null) return;
+
+    if (countdown === 0) {
+      setGameStarted(true);
+      setCountdown(null);
+      spawnFirstGreenCircle();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [countdown, spawnFirstGreenCircle]);
 
   useEffect(() => {
     if (!gameCircle.isVisible && gameStarted) {
@@ -118,6 +142,14 @@ const Index = () => {
       <StarBackground />
       <ScoreDisplay score={score} />
       
+      {countdown !== null && (
+        <div className="absolute inset-0 flex items-center justify-center z-50">
+          <div className="text-8xl font-bold text-white animate-bounce">
+            {countdown === 0 ? "Start!" : countdown}
+          </div>
+        </div>
+      )}
+
       <GameCircle
         type={gameCircle.type}
         isVisible={gameCircle.isVisible}
