@@ -66,9 +66,11 @@ const Index = () => {
         incrementScore();
         setGameCircle((prev) => ({ ...prev, isVisible: false }));
         confetti({
-          particleCount: 100,
-          spread: 70,
+          particleCount: 50,
+          spread: 50,
           origin: { y: 0.6 },
+          gravity: 2,
+          decay: 0.8
         });
       } else {
         setGameCircle((prev) => ({ ...prev, taps: newTaps }));
@@ -77,9 +79,11 @@ const Index = () => {
       incrementScore();
       setGameCircle((prev) => ({ ...prev, isVisible: false }));
       confetti({
-        particleCount: 50,
-        spread: 45,
+        particleCount: 25,
+        spread: 35,
         origin: { y: 0.6 },
+        gravity: 2,
+        decay: 0.8
       });
     }
   };
@@ -133,7 +137,7 @@ const Index = () => {
 
   useEffect(() => {
     if (!gameCircle.isVisible && gameStarted) {
-      const timeout = setTimeout(spawnNewCircle, 2000);
+      const timeout = setTimeout(spawnNewCircle, 1500);
       return () => clearTimeout(timeout);
     }
   }, [gameCircle.isVisible, spawnNewCircle, gameStarted]);
