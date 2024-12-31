@@ -4,6 +4,12 @@ import GameLetters from './GameLetters';
 import ScoreDisplay from './ScoreDisplay';
 import { Button } from './ui/button';
 import { Flag } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface GameContainerProps {
   gameStarted: boolean;
@@ -18,6 +24,9 @@ interface GameContainerProps {
   onCircleClick: () => void;
   onLetterClick: (letter: string) => void;
   onEndGame: () => void;
+  hasSeenGreen: boolean;
+  hasSeenYellow: boolean;
+  hasSeenRed: boolean;
 }
 
 const GameContainer: React.FC<GameContainerProps> = ({
@@ -29,7 +38,25 @@ const GameContainer: React.FC<GameContainerProps> = ({
   onCircleClick,
   onLetterClick,
   onEndGame,
+  hasSeenGreen,
+  hasSeenYellow,
+  hasSeenRed,
 }) => {
+  const getTooltipContent = () => {
+    if (gameCircle.type === "green" && !hasSeenGreen) {
+      return "This is a Focus Target! Tap it multiple times to clear it. The number shows how many taps remain.";
+    }
+    if (gameCircle.type === "yellow" && !hasSeenYellow) {
+      return "Quick Win! Just one tap to clear this yellow circle.";
+    }
+    if (gameCircle.type === "red" && !hasSeenRed) {
+      return "This is a Distraction! Instead of tapping it, try spelling 'FOCUS' with the letters below.";
+    }
+    return null;
+  };
+
+  const tooltipContent = getTooltipContent();
+
   return (
     <div className="relative h-full w-full flex flex-col items-center justify-center px-4 py-6">
       <ScoreDisplay score={score} />
@@ -48,12 +75,35 @@ const GameContainer: React.FC<GameContainerProps> = ({
       )}
 
       <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
-        <GameCircle
-          type={gameCircle.type}
-          isVisible={gameCircle.isVisible}
-          onClick={onCircleClick}
-          taps={gameCircle.taps}
-        />
+        <TooltipProvider>
+          {tooltipContent ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative">
+                  <GameCircle
+                    type={gameCircle.type}
+                    isVisible={gameCircle.isVisible}
+                    onClick={onCircleClick}
+                    taps={gameCircle.taps}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent 
+                side="top" 
+                className="max-w-[200px] text-center bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-lg shadow-lg"
+              >
+                {tooltipContent}
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <GameCircle
+              type={gameCircle.type}
+              isVisible={gameCircle.isVisible}
+              onClick={onCircleClick}
+              taps={gameCircle.taps}
+            />
+          )}
+        </TooltipProvider>
       </div>
 
       <div className="w-full max-w-lg mx-auto mt-auto">

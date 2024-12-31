@@ -6,6 +6,14 @@ import GameCountdown from "@/components/GameCountdown";
 import EndGameDialog from "@/components/EndGameDialog";
 import { useGameState } from "@/hooks/useGameState";
 import confetti from "canvas-confetti";
+import { Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
 
@@ -17,6 +25,9 @@ const Index = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [showEndDialog, setShowEndDialog] = useState(false);
+  const [hasSeenGreen, setHasSeenGreen] = useState(false);
+  const [hasSeenYellow, setHasSeenYellow] = useState(false);
+  const [hasSeenRed, setHasSeenRed] = useState(false);
   const [gameCircle, setGameCircle] = useState<{
     type: "green" | "red" | "yellow";
     isVisible: boolean;
@@ -49,12 +60,18 @@ const Index = () => {
     const taps = type === "green" ? Math.floor(Math.random() * 4) + 3 : 0;
     setGameCircle({ type, isVisible: true, taps });
     setCurrentSequence([]);
-  }, [gameStarted]);
+
+    // Track first appearance of each type
+    if (type === "green" && !hasSeenGreen) setHasSeenGreen(true);
+    if (type === "yellow" && !hasSeenYellow) setHasSeenYellow(true);
+    if (type === "red" && !hasSeenRed) setHasSeenRed(true);
+  }, [gameStarted, hasSeenGreen, hasSeenYellow, hasSeenRed]);
 
   const spawnFirstGreenCircle = useCallback(() => {
     const taps = Math.floor(Math.random() * 4) + 3;
     setGameCircle({ type: "green", isVisible: true, taps });
     setCurrentSequence([]);
+    setHasSeenGreen(true);
   }, []);
 
   const handleCircleClick = () => {
@@ -110,13 +127,20 @@ const Index = () => {
     setShowInstructions(false);
     setCountdown(3);
     await initializeGame();
+    // Reset the seen states when starting a new game
+    setHasSeenGreen(false);
+    setHasSeenYellow(false);
+    setHasSeenRed(false);
   };
 
   const handlePlayAgain = async () => {
     scrambleLetters();
-    setGameStarted(true);
-    await initializeGame();
-    spawnFirstGreenCircle();
+    setShowInstructions(true); // Show instructions modal again
+    setShowEndDialog(false);
+    // Reset the seen states for the new game
+    setHasSeenGreen(false);
+    setHasSeenYellow(false);
+    setHasSeenRed(false);
   };
 
   useEffect(() => {
@@ -151,6 +175,27 @@ const Index = () => {
     <div className="h-screen w-screen overflow-hidden relative">
       <StarBackground />
       
+      {/* Info button for instructions */}
+      <div className="absolute top-4 left-4 z-50">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+                onClick={() => setShowInstructions(true)}
+              >
+                <Info className="h-5 w-5 text-white" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View game instructions</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
       <GameContainer
         gameStarted={gameStarted}
         gameCircle={gameCircle}
@@ -160,6 +205,10 @@ const Index = () => {
         onCircleClick={handleCircleClick}
         onLetterClick={handleLetterClick}
         onEndGame={() => setShowEndDialog(true)}
+        // Pass the first appearance states and their setter functions
+        hasSeenGreen={hasSeenGreen}
+        hasSeenYellow={hasSeenYellow}
+        hasSeenRed={hasSeenRed}
       />
 
       <GameCountdown countdown={countdown} />
