@@ -4,6 +4,7 @@ import GameLetters from './GameLetters';
 import ScoreDisplay from './ScoreDisplay';
 import { Button } from './ui/button';
 import { Flag } from 'lucide-react';
+import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
@@ -57,6 +58,15 @@ const GameContainer: React.FC<GameContainerProps> = ({
     return null;
   };
 
+  const handleCircleClick = () => {
+    if (gameCircle.type === "red") {
+      toast.info("Ignore the red circle! Instead, spell 'FOCUS' using the letters below.", {
+        duration: 3000,
+      });
+    }
+    onCircleClick();
+  };
+
   const tooltipContent = getTooltipContent();
 
   return (
@@ -85,7 +95,7 @@ const GameContainer: React.FC<GameContainerProps> = ({
                   <GameCircle
                     type={gameCircle.type}
                     isVisible={gameCircle.isVisible}
-                    onClick={onCircleClick}
+                    onClick={handleCircleClick}
                     taps={gameCircle.taps}
                   />
                 </div>
@@ -101,7 +111,7 @@ const GameContainer: React.FC<GameContainerProps> = ({
             <GameCircle
               type={gameCircle.type}
               isVisible={gameCircle.isVisible}
-              onClick={onCircleClick}
+              onClick={handleCircleClick}
               taps={gameCircle.taps}
             />
           )}
