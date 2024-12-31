@@ -9,7 +9,7 @@ interface GameLettersProps {
 
 const GameLetters = ({ scrambledLetters, currentSequence, onLetterClick }: GameLettersProps) => {
   return (
-    <div className="absolute bottom-12 left-0 right-0 flex justify-center gap-4">
+    <div className="absolute bottom-20 sm:bottom-12 left-0 right-0 flex justify-center gap-2 sm:gap-4 px-4">
       {scrambledLetters.map((letter, index) => (
         <FocusCircle
           key={index}

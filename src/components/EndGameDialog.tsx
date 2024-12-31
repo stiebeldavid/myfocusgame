@@ -69,15 +69,15 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-md">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center gap-2">
-            <Trophy className="text-yellow-500" />
+      <AlertDialogContent className="sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+        <AlertDialogHeader className="space-y-4">
+          <AlertDialogTitle className="flex items-center gap-2 text-xl sm:text-2xl">
+            <Trophy className="text-yellow-500 h-6 w-6 sm:h-8 sm:w-8" />
             Great focus session!
           </AlertDialogTitle>
-          <AlertDialogDescription className="space-y-4">
-            <p>You scored {score} points.</p>
-            <p>Want to build even better focus skills?</p>
+          <AlertDialogDescription className="space-y-6">
+            <p className="text-lg">You scored {score} points.</p>
+            <p className="text-lg">Want to build even better focus skills?</p>
             <p className="text-sm text-muted-foreground">
               Get notified when we add new focus-building features.
             </p>
@@ -87,22 +87,23 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="w-full"
               />
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+        <AlertDialogFooter className="flex-col sm:flex-row gap-3 mt-6">
           <Button
             onClick={handleSubmit}
             disabled={!email || isSubmitting || isSubscribed}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto py-6"
           >
             {isSubscribed ? "Thanks!" : "Join the Waitlist"}
           </Button>
           <Button
             variant="outline"
             onClick={handlePlayAgain}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto py-6"
           >
             Play Again
           </Button>
