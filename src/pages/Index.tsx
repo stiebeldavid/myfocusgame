@@ -154,9 +154,9 @@ const Index = () => {
           <Button
             variant="outline"
             onClick={() => setShowEndDialog(true)}
-            className="bg-white/10 backdrop-blur-sm hover:bg-white/20"
+            className="bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-200 text-white border-white/20"
           >
-            <Flag className="mr-2" />
+            <Flag className="mr-2 h-4 w-4" />
             Done Training
           </Button>
         </div>

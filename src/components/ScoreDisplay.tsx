@@ -6,7 +6,7 @@ interface ScoreDisplayProps {
 
 const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score }) => {
   return (
-    <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-sm px-6 py-2 rounded-full">
+    <div className="absolute top-8 left-8 bg-white/10 backdrop-blur-sm px-6 py-2 rounded-full">
       <span className="text-white text-2xl font-bold">{score}</span>
     </div>
   );
