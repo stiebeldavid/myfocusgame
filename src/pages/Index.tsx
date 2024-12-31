@@ -66,11 +66,10 @@ const Index = () => {
         incrementScore();
         setGameCircle((prev) => ({ ...prev, isVisible: false }));
         confetti({
-          particleCount: 50,
-          spread: 50,
+          particleCount: 100,
+          spread: 70,
           origin: { y: 0.6 },
-          gravity: 2,
-          decay: 0.8
+          decay: 0.95  // This makes particles fade faster
         });
       } else {
         setGameCircle((prev) => ({ ...prev, taps: newTaps }));
@@ -79,11 +78,10 @@ const Index = () => {
       incrementScore();
       setGameCircle((prev) => ({ ...prev, isVisible: false }));
       confetti({
-        particleCount: 25,
-        spread: 35,
+        particleCount: 50,
+        spread: 45,
         origin: { y: 0.6 },
-        gravity: 2,
-        decay: 0.8
+        decay: 0.95  // This makes particles fade faster
       });
     }
   };
