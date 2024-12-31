@@ -116,6 +116,13 @@ const Index = () => {
     await initializeGame();
   };
 
+  const handlePlayAgain = async () => {
+    scrambleLetters();
+    setGameStarted(true);
+    await initializeGame();
+    spawnFirstGreenCircle();
+  };
+
   useEffect(() => {
     scrambleLetters();
   }, [scrambleLetters]);
@@ -188,6 +195,7 @@ const Index = () => {
         onOpenChange={setShowEndDialog}
         score={score}
         gameId={currentGameId}
+        onPlayAgain={handlePlayAgain}
       />
     </div>
   );

@@ -18,6 +18,7 @@ interface EndGameDialogProps {
   onOpenChange: (open: boolean) => void;
   score: number;
   gameId: number | null;
+  onPlayAgain: () => void;
 }
 
 const EndGameDialog: React.FC<EndGameDialogProps> = ({
@@ -25,9 +26,11 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
   onOpenChange,
   score,
   gameId,
+  onPlayAgain,
 }) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async () => {
@@ -42,11 +45,11 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
 
       if (error) throw error;
 
+      setIsSubscribed(true);
       toast({
         title: "Thanks for subscribing!",
         description: "We'll keep you posted about new focus-building features.",
       });
-      onOpenChange(false);
     } catch (error) {
       console.error("Error saving email:", error);
       toast({
@@ -59,6 +62,11 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
     }
   };
 
+  const handlePlayAgain = () => {
+    onPlayAgain();
+    onOpenChange(false);
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-md">
@@ -68,7 +76,11 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
             Great focus session!
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-4">
-            <p>You scored {score} points. Want to build even better focus skills?</p>
+            <p>You scored {score} points.</p>
+            <p>Want to build even better focus skills?</p>
+            <p className="text-sm text-muted-foreground">
+              Get notified when we add new focus-building features.
+            </p>
             <div className="space-y-2">
               <Input
                 type="email"
@@ -76,24 +88,23 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <p className="text-sm text-muted-foreground">
-                Get notified when we add new focus-building features.
-              </p>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-col sm:flex-row gap-2">
           <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
+            onClick={handleSubmit}
+            disabled={!email || isSubmitting || isSubscribed}
+            className="w-full sm:w-auto"
           >
-            Maybe later
+            {isSubscribed ? "Thanks!" : "Join the Waitlist"}
           </Button>
           <Button
-            onClick={handleSubmit}
-            disabled={!email || isSubmitting}
+            variant="outline"
+            onClick={handlePlayAgain}
+            className="w-full sm:w-auto"
           >
-            Keep me posted
+            Play Again
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
