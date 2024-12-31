@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import GameCircle from './GameCircle';
 import GameLetters from './GameLetters';
 import ScoreDisplay from './ScoreDisplay';
@@ -44,6 +44,8 @@ const GameContainer: React.FC<GameContainerProps> = ({
   hasSeenRed,
   onShowInstructions,
 }) => {
+  const [showRedTooltip, setShowRedTooltip] = useState(false);
+
   const getTooltipContent = () => {
     if (gameCircle.type === "green" && !hasSeenGreen) {
       return "This is a Focus Target! Tap it multiple times to clear it. The number shows how many taps remain.";
@@ -58,6 +60,11 @@ const GameContainer: React.FC<GameContainerProps> = ({
   };
 
   const handleCircleClick = () => {
+    if (gameCircle.type === "red") {
+      setShowRedTooltip(true);
+      // Hide tooltip after 3 seconds
+      setTimeout(() => setShowRedTooltip(false), 3000);
+    }
     onCircleClick();
   };
 
@@ -82,7 +89,7 @@ const GameContainer: React.FC<GameContainerProps> = ({
 
       <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
         <TooltipProvider>
-          <Tooltip open={gameCircle.type === "red"}>
+          <Tooltip open={gameCircle.type === "red" && showRedTooltip}>
             <TooltipTrigger asChild>
               <div className="relative">
                 <GameCircle
