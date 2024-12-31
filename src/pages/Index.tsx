@@ -3,15 +3,14 @@ import StarBackground from "@/components/StarBackground";
 import FocusCircle from "@/components/FocusCircle";
 import GameCircle from "@/components/GameCircle";
 import ScoreDisplay from "@/components/ScoreDisplay";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Target, ZapOff, Zap, Star } from "lucide-react";
+import GameInstructions from "@/components/GameInstructions";
+import { useGameState } from "@/hooks/useGameState";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
 
 const Index = () => {
-  const [score, setScore] = useState(0);
+  const { score, initializeGame, incrementScore } = useGameState();
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
   const [showInstructions, setShowInstructions] = useState(true);
@@ -38,21 +37,21 @@ const Index = () => {
     const rand = Math.random();
     let type: "green" | "red" | "yellow";
     
-    if (rand < 0.5) { // 50% chance for yellow
+    if (rand < 0.5) {
       type = "yellow";
-    } else if (rand < 0.75) { // 25% chance for green
+    } else if (rand < 0.75) {
       type = "green";
-    } else { // 25% chance for red
+    } else {
       type = "red";
     }
 
-    const taps = type === "green" ? Math.floor(Math.random() * 4) + 3 : 0; // 3-6 taps for green
+    const taps = type === "green" ? Math.floor(Math.random() * 4) + 3 : 0;
     setGameCircle({ type, isVisible: true, taps });
     setCurrentSequence([]);
   }, [gameStarted]);
 
   const spawnFirstGreenCircle = useCallback(() => {
-    const taps = Math.floor(Math.random() * 4) + 3; // 3-6 taps
+    const taps = Math.floor(Math.random() * 4) + 3;
     setGameCircle({ type: "green", isVisible: true, taps });
     setCurrentSequence([]);
   }, []);
@@ -63,7 +62,7 @@ const Index = () => {
     if (gameCircle.type === "green") {
       const newTaps = gameCircle.taps - 1;
       if (newTaps === 0) {
-        setScore((prev) => prev + 1);
+        incrementScore();
         setGameCircle((prev) => ({ ...prev, isVisible: false }));
         confetti({
           particleCount: 100,
@@ -74,7 +73,7 @@ const Index = () => {
         setGameCircle((prev) => ({ ...prev, taps: newTaps }));
       }
     } else if (gameCircle.type === "yellow") {
-      setScore((prev) => prev + 1);
+      incrementScore();
       setGameCircle((prev) => ({ ...prev, isVisible: false }));
       confetti({
         particleCount: 50,
@@ -91,7 +90,7 @@ const Index = () => {
     setCurrentSequence(newSequence);
 
     if (newSequence.join("") === "FOCUS") {
-      setScore((prev) => prev + 1);
+      incrementScore();
       setGameCircle((prev) => ({ ...prev, isVisible: false }));
       confetti({
         particleCount: 100,
@@ -104,9 +103,10 @@ const Index = () => {
     }
   };
 
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
     setShowInstructions(false);
     setCountdown(3);
+    await initializeGame();
   };
 
   useEffect(() => {
@@ -168,61 +168,11 @@ const Index = () => {
         ))}
       </div>
 
-      <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
-        <DialogContent className="sm:max-w-[600px] bg-[#1A1F2C] border-[#9b87f5] text-white">
-          <DialogHeader className="space-y-6">
-            <DialogTitle className="text-3xl font-bold text-center flex items-center justify-center gap-3 text-[#9b87f5]">
-              <Star className="w-8 h-8" />
-              Welcome to Focus Flow!
-              <Star className="w-8 h-8" />
-            </DialogTitle>
-            <DialogDescription className="space-y-8 text-white/90">
-              <p className="text-center text-xl leading-relaxed">
-                Train your focus by engaging with what matters and ignoring distractions.
-              </p>
-              <div className="space-y-6 bg-white/5 p-8 rounded-lg">
-                <div className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <Target className="w-8 h-8 text-game-success" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-xl text-[#D6BCFA] mb-2">Focus Targets</h3>
-                    <p className="text-base leading-relaxed">Green circles need multiple taps to clear. The number shows how many taps remain. These represent important tasks that need your sustained attention.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <ZapOff className="w-8 h-8 text-game-danger" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-xl text-[#D6BCFA] mb-2">Distractions</h3>
-                    <p className="text-base leading-relaxed">Red circles are distractions. Practice ignoring them and spell "FOCUS" instead. Just like in real life, some things are better left alone.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <Zap className="w-8 h-8 text-yellow-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-xl text-[#D6BCFA] mb-2">Quick Wins</h3>
-                    <p className="text-base leading-relaxed">Yellow circles need just one tap. They're like small tasks you can quickly complete between bigger challenges.</p>
-                  </div>
-                </div>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="sm:justify-center mt-6">
-            <Button 
-              onClick={handleStartGame} 
-              className="w-full sm:w-[200px] bg-[#9b87f5] hover:bg-[#7E69AB] text-white font-semibold text-lg py-6"
-            >
-              Start Training
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <GameInstructions
+        open={showInstructions}
+        onOpenChange={setShowInstructions}
+        onStartGame={handleStartGame}
+      />
     </div>
   );
 };
