@@ -5,6 +5,7 @@ import GameCircle from "@/components/GameCircle";
 import ScoreDisplay from "@/components/ScoreDisplay";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Target, ZapOff, Zap, Star } from "lucide-react";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
@@ -136,22 +137,50 @@ const Index = () => {
       </div>
 
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Welcome to the Focus Game!</DialogTitle>
-            <DialogDescription className="space-y-4 pt-4">
-              <p>Here's how to play:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Yellow circles: Tap once to pop</li>
-                <li>Green circles: Tap the number shown inside to pop</li>
-                <li>Red circles: Spell "FOCUS" using the letters below</li>
-              </ul>
-              <p>Score points by successfully completing each challenge!</p>
+        <DialogContent className="sm:max-w-[500px] bg-[#1A1F2C] border-[#9b87f5] text-white">
+          <DialogHeader className="space-y-4">
+            <DialogTitle className="text-2xl font-bold text-center flex items-center justify-center gap-2 text-[#9b87f5]">
+              <Star className="w-6 h-6" />
+              Welcome to Focus Flow!
+              <Star className="w-6 h-6" />
+            </DialogTitle>
+            <DialogDescription className="space-y-6 text-white/90">
+              <p className="text-center text-lg">
+                Train your focus by engaging with what matters and ignoring distractions.
+              </p>
+              <div className="space-y-4 bg-white/5 p-6 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Target className="w-5 h-5 mt-1 text-game-success" />
+                  <div>
+                    <h3 className="font-semibold text-[#D6BCFA]">Focus Targets</h3>
+                    <p className="text-sm">Green circles need multiple taps to clear. The number shows how many taps remain. These represent important tasks that need your sustained attention.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <ZapOff className="w-5 h-5 mt-1 text-game-danger" />
+                  <div>
+                    <h3 className="font-semibold text-[#D6BCFA]">Distractions</h3>
+                    <p className="text-sm">Red circles are distractions. Practice ignoring them and spell "FOCUS" instead. Just like in real life, some things are better left alone.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <Zap className="w-5 h-5 mt-1 text-yellow-400" />
+                  <div>
+                    <h3 className="font-semibold text-[#D6BCFA]">Quick Wins</h3>
+                    <p className="text-sm">Yellow circles need just one tap. They're like small tasks you can quickly complete between bigger challenges.</p>
+                  </div>
+                </div>
+              </div>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button onClick={handleStartGame} className="w-full">
-              Start Game
+          <DialogFooter className="sm:justify-center">
+            <Button 
+              onClick={handleStartGame} 
+              className="w-full sm:w-[200px] bg-[#9b87f5] hover:bg-[#7E69AB] text-white font-semibold"
+            >
+              Start Training
             </Button>
           </DialogFooter>
         </DialogContent>
