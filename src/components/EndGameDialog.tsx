@@ -89,17 +89,18 @@ const EndGameDialog: React.FC<EndGameDialogProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full"
               />
+              <Button
+                onClick={handleSubmit}
+                disabled={!email || isSubmitting || isSubscribed}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2 px-4 mt-2"
+                size="lg"
+              >
+                {isSubscribed ? "Thanks!" : "Join the Waitlist →"}
+              </Button>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-col sm:flex-row gap-3 mt-4">
-          <Button
-            onClick={handleSubmit}
-            disabled={!email || isSubmitting || isSubscribed}
-            className="w-full sm:w-auto py-4 sm:py-6"
-          >
-            {isSubscribed ? "Thanks!" : "Join the Waitlist"}
-          </Button>
+        <AlertDialogFooter className="mt-4">
           <Button
             variant="outline"
             onClick={handlePlayAgain}
