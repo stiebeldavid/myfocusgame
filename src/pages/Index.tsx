@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import StarBackground from "@/components/StarBackground";
-import GameCircle from "@/components/GameCircle";
-import ScoreDisplay from "@/components/ScoreDisplay";
+import GameContainer from "@/components/GameContainer";
 import GameInstructions from "@/components/GameInstructions";
 import GameCountdown from "@/components/GameCountdown";
-import GameLetters from "@/components/GameLetters";
 import EndGameDialog from "@/components/EndGameDialog";
 import { useGameState } from "@/hooks/useGameState";
-import { Button } from "@/components/ui/button";
-import { Flag } from "lucide-react";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
@@ -154,35 +150,19 @@ const Index = () => {
   return (
     <div className="h-screen w-screen overflow-hidden relative">
       <StarBackground />
-      <ScoreDisplay score={score} />
       
-      {gameStarted && (
-        <div className="absolute top-4 sm:top-8 right-4 sm:right-8">
-          <Button
-            variant="outline"
-            onClick={() => setShowEndDialog(true)}
-            className="bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-200 text-white border-white/20 text-sm sm:text-base py-2 px-3 sm:py-3 sm:px-4"
-          >
-            <Flag className="mr-2 h-4 w-4" />
-            Done Training
-          </Button>
-        </div>
-      )}
-      
-      <GameCountdown countdown={countdown} />
-
-      <GameCircle
-        type={gameCircle.type}
-        isVisible={gameCircle.isVisible}
-        onClick={handleCircleClick}
-        taps={gameCircle.taps}
-      />
-
-      <GameLetters
+      <GameContainer
+        gameStarted={gameStarted}
+        gameCircle={gameCircle}
         scrambledLetters={scrambledLetters}
         currentSequence={currentSequence}
+        score={score}
+        onCircleClick={handleCircleClick}
         onLetterClick={handleLetterClick}
+        onEndGame={() => setShowEndDialog(true)}
       />
+
+      <GameCountdown countdown={countdown} />
 
       <GameInstructions
         open={showInstructions}
