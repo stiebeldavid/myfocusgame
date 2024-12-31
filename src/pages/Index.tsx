@@ -3,6 +3,8 @@ import StarBackground from "@/components/StarBackground";
 import FocusCircle from "@/components/FocusCircle";
 import GameCircle from "@/components/GameCircle";
 import ScoreDisplay from "@/components/ScoreDisplay";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import confetti from "canvas-confetti";
 
 const FOCUS_LETTERS = ["F", "O", "C", "U", "S"];
@@ -11,6 +13,8 @@ const Index = () => {
   const [score, setScore] = useState(0);
   const [scrambledLetters, setScrambledLetters] = useState<string[]>([]);
   const [currentSequence, setCurrentSequence] = useState<string[]>([]);
+  const [showInstructions, setShowInstructions] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
   const [gameCircle, setGameCircle] = useState<{
     type: "green" | "red" | "yellow";
     isVisible: boolean;
@@ -27,6 +31,8 @@ const Index = () => {
   }, []);
 
   const spawnNewCircle = useCallback(() => {
+    if (!gameStarted) return;
+    
     const rand = Math.random();
     let type: "green" | "red" | "yellow";
     
@@ -41,7 +47,7 @@ const Index = () => {
     const taps = type === "green" ? Math.floor(Math.random() * 4) + 3 : 0; // 3-6 taps for green
     setGameCircle({ type, isVisible: true, taps });
     setCurrentSequence([]);
-  }, []);
+  }, [gameStarted]);
 
   const handleCircleClick = () => {
     if (!gameCircle.isVisible) return;
@@ -90,16 +96,21 @@ const Index = () => {
     }
   };
 
+  const handleStartGame = () => {
+    setShowInstructions(false);
+    setGameStarted(true);
+  };
+
   useEffect(() => {
     scrambleLetters();
   }, [scrambleLetters]);
 
   useEffect(() => {
-    if (!gameCircle.isVisible) {
+    if (!gameCircle.isVisible && gameStarted) {
       const timeout = setTimeout(spawnNewCircle, 2000);
       return () => clearTimeout(timeout);
     }
-  }, [gameCircle.isVisible, spawnNewCircle]);
+  }, [gameCircle.isVisible, spawnNewCircle, gameStarted]);
 
   return (
     <div className="h-screen w-screen overflow-hidden relative">
@@ -123,6 +134,28 @@ const Index = () => {
           />
         ))}
       </div>
+
+      <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Welcome to the Focus Game!</DialogTitle>
+            <DialogDescription className="space-y-4 pt-4">
+              <p>Here's how to play:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Yellow circles: Tap once to pop</li>
+                <li>Green circles: Tap the number shown inside to pop</li>
+                <li>Red circles: Spell "FOCUS" using the letters below</li>
+              </ul>
+              <p>Score points by successfully completing each challenge!</p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={handleStartGame} className="w-full">
+              Start Game
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
